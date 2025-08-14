@@ -1,69 +1,84 @@
-// قاعدة البيانات
-let qa = JSON.parse(localStorage.getItem("qa")) || [
-  { question: "شنو هو الذكاء الاصطناعي؟", answer: "الذكاء الاصطناعي هو تقنية تمكّن الحواسيب من التعلم واتخاذ القرارات بطريقة تشبه البشر.", category: "علوم" },
-  { question: "شنو هو HTML؟", answer: "HTML هي لغة الترميز لإنشاء صفحات الويب.", category: "برمجة" },
-  { question: "كيفاش نصاوب تطبيق؟", answer: "باش تصايب تطبيق خاصك تختار لغة برمجة وتصميم واجهة المستخدم وربطها بالمنطق.", category: "برمجة" }
-];
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
 
-const adminPassword = "1234"; // ممكن تغيّر كلمة السر
+const box = 20; // حجم كل مربع في الشبكة
+let snake = [{x: 8 * box, y: 8 * box}]; // الحنش يبدأ في الوسط
+let direction = "RIGHT";
+let score = 0;
 
-// البحث المتقدم
-function getAnswer() {
-  const questionInput = document.getElementById("question").value.trim().toLowerCase();
-  const selectedCategory = document.getElementById("category").value;
-  const answerDiv = document.getElementById("answer");
+// تفاحة
+let food = {
+    x: Math.floor(Math.random() * 20) * box,
+    y: Math.floor(Math.random() * 20) * box
+};
 
-  let results = qa.filter(q => 
-    q.question.toLowerCase().includes(questionInput) &&
-    (selectedCategory === "" || q.category === selectedCategory)
-  );
+// تحريك الحنش بالأسهم
+document.addEventListener("keydown", changeDirection);
 
-  answerDiv.innerHTML = "";
-  if(results.length > 0){
-    results.forEach(r => {
-      const card = document.createElement("div");
-      card.className = "qa-card";
-      card.innerHTML = `<strong>${r.question}</strong><br>${r.answer}`;
-      answerDiv.appendChild(card);
-    });
-  } else {
-    answerDiv.innerText = "ما لقيتش جواب على هاد السؤال 😅";
-  }
+function changeDirection(event) {
+    if(event.keyCode === 37 && direction !== "RIGHT") direction = "LEFT";
+    else if(event.keyCode === 38 && direction !== "DOWN") direction = "UP";
+    else if(event.keyCode === 39 && direction !== "LEFT") direction = "RIGHT";
+    else if(event.keyCode === 40 && direction !== "UP") direction = "DOWN";
 }
 
-// إضافة سؤال جديد
-function addQuestion() {
-  const q = document.getElementById("newQuestion").value.trim();
-  const a = document.getElementById("newAnswer").value.trim();
-  const c = document.getElementById("newCategory").value;
-  const msgDiv = document.getElementById("addMsg");
+// رسم اللعبة
+function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  if(q && a){
-    qa.push({ question: q, answer: a, category: c });
-    localStorage.setItem("qa", JSON.stringify(qa));
-    msgDiv.innerText = "تمت إضافة السؤال بنجاح ✅";
-    document.getElementById("newQuestion").value = "";
-    document.getElementById("newAnswer").value = "";
-  } else {
-    msgDiv.innerText = "عافاك عَمّر السؤال والجواب ✋";
-  }
+    // رسم الحنش
+    for(let i=0; i<snake.length; i++) {
+        ctx.fillStyle = (i===0) ? "green" : "lightgreen";
+        ctx.fillRect(snake[i].x, snake[i].y, box, box);
+        ctx.strokeStyle = "white";
+        ctx.strokeRect(snake[i].x, snake[i].y, box, box);
+    }
+
+    // رسم التفاحة
+    ctx.fillStyle = "red";
+    ctx.fillRect(food.x, food.y, box, box);
+
+    // تحريك الحنش
+    let snakeX = snake[0].x;
+    let snakeY = snake[0].y;
+
+    if(direction === "LEFT") snakeX -= box;
+    if(direction === "UP") snakeY -= box;
+    if(direction === "RIGHT") snakeX += box;
+    if(direction === "DOWN") snakeY += box;
+
+    // الأكل
+    if(snakeX === food.x && snakeY === food.y) {
+        score++;
+        document.getElementById("score").innerText = score;
+        food = {
+            x: Math.floor(Math.random() * 20) * box,
+            y: Math.floor(Math.random() * 20) * box
+        };
+    } else {
+        snake.pop();
+    }
+
+    // إضافة الرأس الجديد
+    let newHead = {x: snakeX, y: snakeY};
+    
+    // كوليجات مع الحيط أو مع النفس
+    if(snakeX < 0 || snakeX >= 400 || snakeY < 0 || snakeY >= 400 || collision(newHead, snake)) {
+        clearInterval(game);
+        alert("خسرت! النقاط: " + score);
+        return;
+    }
+
+    snake.unshift(newHead);
 }
 
-// تسجيل دخول المسؤول
-function adminLogin() {
-  const pass = document.getElementById("adminPass").value;
-  const msgDiv = document.getElementById("adminMsg");
-  if(pass === adminPassword){
-    document.getElementById("adminSection").style.display = "block";
-    msgDiv.innerText = "تم تسجيل الدخول كمسؤول ✅";
-    document.getElementById("adminPass").value = "";
-  } else {
-    msgDiv.innerText = "كلمة السر خاطئة ❌";
-  }
+// تحقق من الاصطدام مع النفس
+function collision(head, array) {
+    for(let i=0; i<array.length; i++) {
+        if(head.x === array[i].x && head.y === array[i].y) return true;
+    }
+    return false;
 }
 
-// تسجيل خروج المسؤول
-function adminLogout() {
-  document.getElementById("adminSection").style.display = "none";
-  document.getElementById("adminMsg").innerText = "تم تسجيل الخروج ✅";
-}
+// تشغيل اللعبة كل 100ms
+let game = setInterval(draw, 100);
