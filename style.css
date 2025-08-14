@@ -1,0 +1,67 @@
+body { 
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+  background: #f0f4f8; 
+  margin:0; 
+  padding:20px; 
+  text-align:center; 
+}
+
+h1 { 
+  color:#2c3e50; 
+  margin-bottom:20px; 
+}
+
+.section { 
+  background:#fff; 
+  border-radius:12px; 
+  box-shadow:0 4px 10px rgba(0,0,0,0.1); 
+  padding:20px; 
+  margin:20px auto; 
+  max-width:500px; 
+  text-align:left; 
+}
+
+.section h2 { 
+  color:#34495e; 
+  margin-bottom:15px; 
+}
+
+input, textarea, select, button { 
+  width:100%; 
+  padding:10px; 
+  margin:5px 0; 
+  border-radius:8px; 
+  border:1px solid #ccc; 
+  font-size:16px; 
+  box-sizing:border-box; 
+}
+
+button { 
+  background-color:#3498db; 
+  color:#fff; 
+  border:none; 
+  cursor:pointer; 
+  transition:0.3s; 
+}
+
+button:hover { 
+  background-color:#2980b9; 
+}
+
+#answer { 
+  margin-top:15px; 
+  font-size:16px; 
+  color:#e74c3c; 
+  white-space:pre-line; 
+}
+
+.qa-card { 
+  background:#ecf0f1; 
+  border-radius:8px; 
+  padding:10px; 
+  margin:10px 0; 
+}
+
+.qa-card strong { 
+  color:#2c3e50; 
+}

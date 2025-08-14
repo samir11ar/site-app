@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>والأجوبة</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>تطبيق الأسئلة والأجوبة</h1>
+
+<!-- قسم البحث -->
+<div class="section">
+  <h2>سؤال</h2>
+  <input type="text" id="question" placeholder="سول شي سؤال...">
+  <select id="category">
+    <option value="">كل المواضيع</option>
+    <option value="برمجة">برمجة</option>
+    <option value="علوم">علوم</option>
+    <option value="عام">عام</option>
+  </select>
+  <button onclick="getAnswer()">سول</button>
+  <div id="answer"></div>
+</div>
+
+<!-- قسم إضافة الأسئلة (مخفي للمستخدم العادي) -->
+<div class="section" id="adminSection" style="display:none;">
+  <h2>زيد سؤال جديد (خاص بالمكلف)</h2>
+  <input type="text" id="newQuestion" placeholder="السؤال الجديد">
+  <textarea id="newAnswer" placeholder="الجواب الجديد" rows="3"></textarea>
+  <select id="newCategory">
+    <option value="عام">عام</option>
+    <option value="برمجة">برمجة</option>
+    <option value="علوم">علوم</option>
+  </select>
+  <button onclick="addQuestion()">زيد</button>
+  <button onclick="adminLogout()" style="background-color:#e74c3c; margin-top:10px;">خروج</button>
+  <div id="addMsg"></div>
+</div>
+
+<!-- قسم دخول المسؤول -->
+<div class="section">
+  <h2>دخول المسؤول</h2>
+  <input type="password" id="adminPass" placeholder="كلمة السر">
+  <button onclick="adminLogin()">دخول</button>
+  <div id="adminMsg"></div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
